@@ -163,14 +163,49 @@ When we run the above code after the copy we see the below
 
 ![html content](./images/html%20content.PNG)
 
-**Note 1:**  Do not forget to open TCP port 80 on the Web Server. This is done in the security group inbund rule.
+**Note 1:**  Do not forget to open TCP port 80 on the Web Server and MYSQL port in DB security group. This is done in the security group inbund rule.
 
 **Note 2:** If you encounter 403 Error – check permissions to your /var/www/html folder and also disable SELinux sudo setenforce 0
 To make this change permanent – open following config file sudo vi /etc/sysconfig/selinux and set SELINUX=disabledthen restrt httpd.
 
 ![SELINUX](./images/SELINUX.PNG)
 
+10. Update the website’s configuration to connect to the database (in /var/www/html/functions.php file). Apply tooling-db.sql script to your database using this command
 
+`mysql -h <databse-private-ip> -u <db-username> -p <db-pasword> < tooling-db.sql`
+
+The website configuration in function.php
+
+![database config](./images/database%20config.PNG)
+
+The tooling-db.sql is an sql script that will run when the above code is initiated.
+
+Also add a binding address using the code below
+
+`sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf`
+
+![binding address](./images/binding%20address.PNG)
+
+The restart mysql
+
+`sudo systemctl restat mysql`
+
+`sudo systemctl status mysql`
+
+Checking the database using `show databases` and swtiching to a table using `use <table name>`. After that we select a user using `select * from users`
+
+![mysql db](./images/mysql%20db.PNG)
+
+Using this user i am able to log into the tooling website.
+
+Or we can create a new admin user using the code below.
+
+`INSERT INTO ‘users’ (‘id’, ‘username’, ‘password’, ’email’, ‘user_type’, ‘status’) VALUES
+-> (1, ‘myuser’, ‘5f4dcc3b5aa765d61d8327deb882cf99’, ‘user@mail.com’, ‘admin’, ‘1’);`
+
+![tooling login](./images/tooling%20website%201.PNG)
+
+![tooling page](./images/tooling%20website%20page.PNG)
 
 
 
